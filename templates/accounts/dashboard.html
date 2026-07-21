@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h4 class="fw-700 mb-1">Dashboard</h4>
+        <p class="text-muted mb-0">Welcome back, {{ user.first_name|default:user.username }}!</p>
+    </div>
+    <a href="{% url 'profile' %}" class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-pencil me-1"></i>Edit Profile
+    </a>
+</div>
+
+<!-- Profile Card -->
+<div class="card mb-4">
+    <div class="card-body p-4">
+        <div class="d-flex align-items-center gap-4">
+            <span class="avatar avatar-xl" style="background:{{ profile.avatar_color }}">{{ profile.get_initials }}</span>
+            <div>
+                <h5 class="fw-700 mb-1">{{ user.get_full_name|default:user.username }}</h5>
+                <p class="text-muted mb-1"><i class="bi bi-envelope me-1"></i>{{ user.email|default:"No email set" }}</p>
+                {% if profile.location %}<p class="text-muted mb-1"><i class="bi bi-geo-alt me-1"></i>{{ profile.location }}</p>{% endif %}
+                <span class="badge bg-success-subtle text-success border border-success-subtle">
+                    <i class="bi bi-circle-fill me-1" style="font-size:.5rem"></i>Active Account
+                </span>
+            </div>
+        </div>
+        {% if profile.bio %}
+        <hr>
+        <p class="mb-0 text-muted">{{ profile.bio }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Stats -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-lg-3">
+        <div class="stat-card">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon bg-primary-subtle text-primary"><i class="bi bi-calendar-check"></i></div>
+                <div>
+                    <div class="text-muted small">Member Since</div>
+                    <div class="fw-600">{{ join_date|date:"M Y" }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="stat-card">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon bg-success-subtle text-success"><i class="bi bi-clock-history"></i></div>
+                <div>
+                    <div class="text-muted small">Last Login</div>
+                    <div class="fw-600">{{ last_login|date:"M d, Y" }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="stat-card">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon bg-warning-subtle text-warning"><i class="bi bi-person-badge"></i></div>
+                <div>
+                    <div class="text-muted small">Account Type</div>
+                    <div class="fw-600">{% if user.is_superuser %}Superuser{% elif user.is_staff %}Staff{% else %}Standard{% endif %}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="stat-card">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon bg-info-subtle text-info"><i class="bi bi-shield-check"></i></div>
+                <div>
+                    <div class="text-muted small">Status</div>
+                    <div class="fw-600">{% if user.is_active %}Verified{% else %}Unverified{% endif %}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="card">
+    <div class="card-header">Quick Actions</div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-sm-6 col-lg-3">
+                <a href="{% url 'profile' %}" class="btn btn-outline-primary w-100 py-3 d-flex flex-column align-items-center gap-2">
+                    <i class="bi bi-person-circle fs-4"></i><span>Edit Profile</span>
+                </a>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <a href="{% url 'password_change' %}" class="btn btn-outline-secondary w-100 py-3 d-flex flex-column align-items-center gap-2">
+                    <i class="bi bi-key fs-4"></i><span>Change Password</span>
+                </a>
+            </div>
+            {% if user.is_staff %}
+            <div class="col-sm-6 col-lg-3">
+                <a href="/admin/" class="btn btn-outline-dark w-100 py-3 d-flex flex-column align-items-center gap-2">
+                    <i class="bi bi-gear fs-4"></i><span>Admin Panel</span>
+                </a>
+            </div>
+            {% endif %}
+            <div class="col-sm-6 col-lg-3">
+                <form method="post" action="{% url 'logout' %}">{% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger w-100 py-3 d-flex flex-column align-items-center gap-2" style="height:100%">
+                        <i class="bi bi-box-arrow-right fs-4"></i><span>Logout</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

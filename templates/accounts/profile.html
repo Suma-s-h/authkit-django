@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}Edit Profile{% endblock %}
+{% block nav_profile %}active{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h4 class="fw-700 mb-1">Profile Settings</h4>
+        <p class="text-muted mb-0">Manage your personal information</p>
+    </div>
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i>Back
+    </a>
+</div>
+
+<div class="row g-4">
+    <!-- Avatar preview -->
+    <div class="col-lg-3">
+        <div class="card text-center p-4">
+            <span class="avatar avatar-xl mx-auto mb-3" id="avatarPreview" style="background:{{ profile.avatar_color }}">{{ profile.get_initials }}</span>
+            <h6 class="fw-600 mb-1">{{ request.user.get_full_name|default:request.user.username }}</h6>
+            <p class="text-muted small mb-0">@{{ request.user.username }}</p>
+            <hr>
+            <label class="form-label small fw-500">Avatar Color</label>
+            {{ form.avatar_color }}
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="col-lg-9">
+        <div class="card">
+            <div class="card-header">Personal Information</div>
+            <div class="card-body p-4">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="form-label fw-500 small">First Name</label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}<div class="text-danger small mt-1">{{ form.first_name.errors.0 }}</div>{% endif %}
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-500 small">Last Name</label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}<div class="text-danger small mt-1">{{ form.last_name.errors.0 }}</div>{% endif %}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-500 small">Email Address</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}<div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>{% endif %}
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-500 small">Phone</label>
+                            {{ form.phone }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-500 small">Gender</label>
+                            {{ form.gender }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-500 small">Date of Birth</label>
+                            {{ form.birth_date }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-500 small">Location</label>
+                            {{ form.location }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-500 small">Website</label>
+                            {{ form.website }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-500 small">Bio</label>
+                            {{ form.bio }}
+                            <div class="form-text">Brief description for your profile. Max 500 characters.</div>
+                        </div>
+                        <div class="col-12 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-check-lg me-1"></i>Save Changes
+                            </button>
+                            <a href="{% url 'dashboard' %}" class="btn btn-light px-4">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const colorInput = document.querySelector('input[type="color"]');
+    const avatarPreview = document.getElementById('avatarPreview');
+    if (colorInput && avatarPreview) {
+        colorInput.addEventListener('input', function() {
+            avatarPreview.style.background = this.value;
+        });
+    }
+});
+</script>
+{% endblock %}
